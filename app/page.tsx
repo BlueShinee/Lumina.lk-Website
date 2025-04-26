@@ -3,6 +3,9 @@ import Nav from "@/components/Nav";
 import Features from "@/components/Features";
 import CallToActionPage from "@/components/CallToAction";
 import HowItWorks from "@/components/example";
+import FAQ from "@/components/FAQ";
+import Footer from "@/components/Footer";
+
 export default function page() {
   return (
     <div className=" w-full flex flex-col items-center ">
@@ -13,6 +16,8 @@ export default function page() {
       <Features />
       <CallToActionPage />
       <HowItWorks />
+      <FAQ />
+      <Footer />
     </div>
   );
 }

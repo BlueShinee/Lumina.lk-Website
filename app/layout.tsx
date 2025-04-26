@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Lexend_Deca, Jua } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  Lexend,
+  DynaPuff} from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,12 +16,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const lexendDeca = Lexend_Deca({
-  variable: "--font-lexend-deca",
+const lexendDeca = Lexend({
+  variable: "--font-lexend",
   subsets: ["latin"],
 });
 
-const jua = Jua({
+const jua = DynaPuff({
   variable: "--font-jua",
   subsets: ["latin"],
   weight: ["400"],
