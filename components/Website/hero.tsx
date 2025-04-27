@@ -1,5 +1,6 @@
 import { Jua, Lexend_Deca } from "next/font/google";
 import Image from "next/image";
+import Link from "next/link";
 
 
 const lexendDeca = Lexend_Deca({
@@ -30,16 +31,16 @@ export default function Hero() {
           All your Educational needs In one place.
         </h2>
         <div className="flex flex-row gap-4 mt-6">
-          <button
-            className={`bg-[#d69a6b] text-white px-4 py-2 w-32 rounded-full hover:bg-[#d69a6b]/80 transition-all duration-300 ease-in-out hover:scale-105 hover:cursor-pointer active:scale-95 shadow-lg font-lexend-deca font-bold`}
+          <Link href={"/signin"}
+            className={`bg-[#d69a6b] text-white px-4 py-2 w-32 rounded-full hover:bg-[#d69a6b]/80 transition-all duration-300 ease-in-out hover:scale-105 hover:cursor-pointer active:scale-95 shadow-lg font-lexend-deca font-bold text-center`}
           >
             Get Started
-          </button>
-          <button
-            className={`bg-[#d69a6b] text-white px-4 py-2 w-32 rounded-full hover:bg-[#d69a6b]/80 transition-all duration-300 ease-in-out hover:scale-105 hover:cursor-pointer active:scale-95 shadow-lg font-lexend-deca font-bold`}
+          </Link>
+          <Link href={"/signin"}
+            className={`bg-[#d69a6b] text-white px-4 py-2 w-32 rounded-full hover:bg-[#d69a6b]/80 transition-all duration-300 ease-in-out hover:scale-105 hover:cursor-pointer active:scale-95 shadow-lg font-lexend-deca font-bold text-center`}
           >
             More Info
-          </button>
+          </Link>
         </div>
       </div>
     </div>

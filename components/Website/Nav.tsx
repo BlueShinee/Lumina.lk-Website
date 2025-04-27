@@ -27,11 +27,11 @@ export default function Nav() {
             Lesson Pack Store
           </Link>
         </div>
-        <button
-          className={`bg-[#d69a6b] text-white px-4 py-2 w-32 rounded-full hover:bg-[#d69a6b]/80 transition-all duration-300 ease-in-out hover:scale-105 hover:cursor-pointer active:scale-95 shadow-sm font-bold font-lexend-deca`}
+        <Link href={'/signin'}
+          className={`bg-[#d69a6b] text-white px-4 py-2 w-32 rounded-full hover:bg-[#d69a6b]/80 transition-all duration-300 ease-in-out hover:scale-105 hover:cursor-pointer active:scale-95 shadow-sm font-bold font-lexend-deca text-center`}
         >
           Get Started
-        </button>
+        </Link>
       </div>
     </div>
   );

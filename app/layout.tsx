@@ -1,9 +1,5 @@
 import type { Metadata } from "next";
-import {
-  Geist,
-  Geist_Mono,
-  Lexend,
-  DynaPuff} from "next/font/google";
+import { Geist, Geist_Mono, Lexend, DynaPuff } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,7 +23,7 @@ const jua = DynaPuff({
   weight: ["400"],
 });
 
-
+import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -44,7 +40,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${lexendDeca.variable} ${jua.variable} antialiased`}
       >
-        {children}
+        <ClerkProvider
+          appearance={{
+            variables: {
+              colorPrimary: "#d69a6b",
+              colorText: "black",
+            },
+          }}
+        >
+          {children}
+        </ClerkProvider>
       </body>
     </html>
   );

@@ -1,10 +1,10 @@
-import Hero from "@/components/hero";
-import Nav from "@/components/Nav";
-import Features from "@/components/Features";
-import CallToActionPage from "@/components/CallToAction";
-import HowItWorks from "@/components/example";
-import FAQ from "@/components/FAQ";
-import Footer from "@/components/Footer";
+import Hero from "@/components/Website/hero";
+import Nav from "@/components/Website/Nav";
+import Features from "@/components/Website/Features";
+import CallToActionPage from "@/components/Website/CallToAction";
+import HowItWorks from "@/components/Website/example";
+import FAQ from "@/components/Website/FAQ";
+import Footer from "@/components/Website/Footer";
 
 export default function page() {
   return (
