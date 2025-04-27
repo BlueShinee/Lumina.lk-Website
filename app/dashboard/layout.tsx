@@ -1,14 +1,18 @@
-import Sidebar from "@/components/Dashboard/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { currentUser } from "@clerk/nextjs/server";
+import { AppSidebar } from "@/components/Dashboard/sidebar";
+import { redirect } from "next/navigation";
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+  const user = await currentUser();
+  if (!user) {
+    redirect('/signin')
+  }
+
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex w-full">
-      <Sidebar />
-      {children}
-    </div>
+    <SidebarProvider>
+          <AppSidebar username={user?.fullName || 'Undifined'} email={user?.primaryEmailAddress?.emailAddress || 'Undifined'} imageUrl={user?.imageUrl} />
+      <main className="w-full">{children}</main>
+    </SidebarProvider>
   );
 }

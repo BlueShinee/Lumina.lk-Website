@@ -1,120 +1,136 @@
-"use client"
+import {
+  ArrowBigLeft,
+  Calendar,
+  Home,
+  Inbox,
+  Plus,
+  Search,
+  Settings,
+  FileJson2,
+  MessagesSquare,
+  NotepadText,
+  Video,
+  Lightbulb,
+  User,
+} from "lucide-react";
+import Image from "next/image";
 
-import React from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import {
-  BookOpen,
-  CheckCircle,
-  LayoutDashboard,
-  Users,
-  Settings,
-  LogOut,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { Separator } from "../ui/separator";
 
-interface SidebarItem {
-  label: string;
-  href: string;
-  icon: React.ReactNode;
-}
-
-const sidebarItems: SidebarItem[] = [
+// Menu items.
+const items = [
   {
-    label: "Dashboard",
-    href: "/dashboard",
-    icon: <LayoutDashboard className="w-4 h-4" />,
+    title: "Home",
+    url: "/dashboard",
+    icon: Home,
   },
   {
-    label: "Courses",
-    href: "/courses",
-    icon: <BookOpen className="w-4 h-4" />,
+    title: "Tutes",
+    url: "/dashboard/tutes",
+    icon: Inbox,
   },
   {
-    label: "Assignments",
-    href: "/assignments",
-    icon: <CheckCircle className="w-4 h-4" />,
+    title: "Recordings",
+    url: "/dashboard/recordings",
+    icon: Video,
   },
-  { label: "Users", href: "/users", icon: <Users className="w-4 h-4" /> },
   {
-    label: "Settings",
-    href: "/settings",
-    icon: <Settings className="w-4 h-4" />,
+    title: "MCQ Tests",
+    url: "/dashboard/mcq",
+    icon: NotepadText,
+  },
+  {
+    title: "Student Forms",
+    url: "/dashboard/forms",
+    icon: MessagesSquare,
+  },
+  {
+    title: "Code Editor",
+    url: "/dashboard/ide",
+    icon: FileJson2,
   },
 ];
 
-const Sidebar = () => {
-  const [isCollapsed, setIsCollapsed] = React.useState(false);
+interface AppSidebarProps {
+  username: string;
+  email: string;
+  imageUrl?: string;
+}
 
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-  };
-
+export function AppSidebar({ username, email, imageUrl }: AppSidebarProps) {
   return (
-    <div
-      className={`
-        bg-gray-900 text-white h-screen flex flex-col
-        transition-width duration-300 ease-in-out
-        ${isCollapsed ? "w-15" : "w-60"}
-      `}
-    >
-      {/* Top Section: Logo and Collapse Button */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-800">
-        <div
-          className={`flex items-center ${
-            isCollapsed ? "justify-center" : "gap-2"
-          }`}
-        >
-          {!isCollapsed && <span className="text-xl font-semibold">LMS</span>}
+    <Sidebar collapsible="icon" className="border-r ">
+      <SidebarHeader className="flex w-full justify-end   bg-zinc-50">
+        <div className="px-4 py-2 flex justify-center items-center">
+          <Lightbulb className="h-auto w-8 text-orange-500 drop-shadow-lg" />
+          <span className="font-jua text-2xl ml-2 text-orange-500 drop-shadow-xl">
+            Lumina
+          </span>
         </div>
-        <button
-          onClick={toggleSidebar}
-          className="text-gray-400 hover:text-white transition-colors"
-          aria-label={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-        >
-          {isCollapsed ? (
-            <ChevronRight className="w-6 h-6" />
-          ) : (
-            <ChevronLeft className="w-6 h-6" />
-          )}
-        </button>
-      </div>
-
-      {/* Navigation Items */}
-      <nav className="flex-1">
-        <ul className="p-2">
-          {sidebarItems.map((item) => (
-            <li key={item.label} className="mb-2">
-              <a
-                href={item.href}
-                className={`
-                  flex items-center gap-2 p-2 rounded
-                  hover:bg-gray-800 transition-colors
-                  ${isCollapsed ? "justify-center" : ""}
-                `}
-              >
-                {item.icon}
-                {!isCollapsed && <span className="text-sm">{item.label}</span>}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      {/* Bottom Section: Logout */}
-      <div className="p-4 border-t border-gray-800">
-        <a
-          href="/logout"
-          className={`flex items-center gap-2 p-2 rounded hover:bg-gray-800 transition-colors ${
-            isCollapsed ? "justify-center" : ""
-          }`}
-        >
-          <LogOut className="w-4 h-4" />
-          {!isCollapsed && <span className="text-sm">Logout</span>}
-        </a>
-      </div>
-    </div>
+      </SidebarHeader>
+      <Separator />
+      <SidebarContent className=" ">
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {items.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    className="hover:bg-orange-200 hover:text-orange-600"
+                  >
+                    <a href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenuButton className="mb-1 bg-orange-200 rounded-full h-10 p-1 hover:bg-orange-300 hover:cursor-pointer">
+          <Avatar className="border border-orange-600 flex justify-center items-center">
+            {imageUrl ? (
+              <AvatarImage src={imageUrl} />
+            ) : (
+              <User className="h-5 w-5 text-orange-600" />
+            )}
+            <AvatarFallback>
+              {username?.split(" ").length > 1
+                ? username?.split(" ")[0]?.charAt(0)?.toUpperCase() +
+                  username?.split(" ")[1]?.charAt(0)?.toUpperCase()
+                : username?.slice(0, 2)?.toUpperCase() || "U"}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col">
+            <span className="text-orange-700 font-semibold tracking-tighter w-[20ch] truncate">
+              {username}
+            </span>
+            <span className="text-orange-700 tracking-tighter text-xs -mt-1.5 w-[20ch] truncate">
+              {email}
+            </span>
+          </div>
+        </SidebarMenuButton>
+      </SidebarFooter>
+    </Sidebar>
   );
-};
-
-export default Sidebar;
+}
