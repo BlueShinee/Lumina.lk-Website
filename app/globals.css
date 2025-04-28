@@ -3,6 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 @plugin "daisyui";
+@plugin "tailwindcss-motion";
 
 .font-jua {
   font-family: var(--font-jua);
