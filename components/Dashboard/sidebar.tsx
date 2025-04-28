@@ -1,3 +1,5 @@
+"use client"
+
 import {
   ArrowBigLeft,
   Calendar,
@@ -14,6 +16,7 @@ import {
   User,
 } from "lucide-react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -74,6 +77,7 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ username, email, imageUrl }: AppSidebarProps) {
+  const pathname = usePathname();
   return (
     <Sidebar collapsible="icon" className="border-r ">
       <SidebarHeader className="flex w-full justify-end bg-white">
@@ -93,11 +97,15 @@ export function AppSidebar({ username, email, imageUrl }: AppSidebarProps) {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
-                    className="hover:bg-orange-200 hover:text-orange-600"
+                    className={`hover:bg-orange-200 text-zinc-700 hover:text-orange-600 ${
+                      pathname === item.url
+                        ? "bg-orange-200 text-orange-600"
+                        : ""
+                    }`}
                   >
                     <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
+                      <item.icon className="" />
+                      <span className="text-[1.025rem]">{item.title}</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

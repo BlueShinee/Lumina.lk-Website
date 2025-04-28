@@ -3,6 +3,7 @@
 import React from 'react'
 import { SearchBar } from '@/components/SearchBar'
 import { CategoryFilter } from '@/components/CatFilter'
+import { UnderDevelopment } from '@/components/UnderDevelopment'
 
 const categories = [
     "2025 A/l",
@@ -14,6 +15,10 @@ export default function page() {
     
     const [searchTerm, setSearchTerm] = React.useState("");
     const [selectedCategory, setSelectedCategory] = React.useState("all");
+    
+    return (
+      <UnderDevelopment description='Tutes System is UnderDevelopment! This feature will be available In the beta stage.' />
+    )
     
     
   return (
