@@ -5,7 +5,6 @@ export const announcementTable = sqliteTable("announcement_table", {
   id: int().primaryKey({ autoIncrement: true }),
   title: text().notNull(),
   content: text().notNull(),
-  time: int({ mode: "timestamp" })
+  date: int({ mode: "number" })
     .notNull()
-    .default(sql`(CURRENT_TIMESTAMP)`),
 });

@@ -3,6 +3,8 @@
 /* import { currentUser } from "@clerk/nextjs/server"; */
 import { useUser } from "@clerk/nextjs";
 
+import { getAnnouncements } from "@/database/index";
+
 import { redirect } from "next/navigation";
 import * as React from "react";
 import {
@@ -31,18 +33,56 @@ import {
   Bell,
 } from "lucide-react";
 
+type announcementType = Awaited<ReturnType<typeof getAnnouncements>>;
+
+const formatDate = (dateNumber: number) => {
+  const dateStr = dateNumber.toString();
+  const year = dateStr.slice(0, 4);
+  const month = parseInt(dateStr.slice(4, 6)) - 1;
+  const day = parseInt(dateStr.slice(6, 8));
+
+  const date = new Date(parseInt(year), month, day);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
 const HomePage = () => {
+  let [announcements, setannouncements] =
+    React.useState<announcementType | null>(null);
+  let [formattedDates, setFormattedDates] = React.useState<{
+    [key: number]: string;
+  }>({});
+
+  React.useEffect(() => {
+    async function fetchAnn() {
+      let announcements = await getAnnouncements();
+      setannouncements(announcements);
+
+      // Format dates for all announcements
+      const dates = announcements.reduce((acc, ann) => {
+        acc[ann.date] = formatDate(ann.date);
+        return acc;
+      }, {} as { [key: number]: string });
+
+      setFormattedDates(dates);
+    }
+    fetchAnn();
+  }, []);
+
   const [selectedAnnouncement, setSelectedAnnouncement] = React.useState<
-    (typeof announcements)[0] | null
+    announcementType[number] | null
   >(null);
 
   const { isSignedIn, user, isLoaded } = useUser();
   if (!isLoaded) {
-      return (
-        <div className="w-full h-screen flex justify-center items-center">
-          <span className="loading loading-spinner loading-xl text-orange-600"></span>
-        </div>
-      );
+    return (
+      <div className="w-full h-screen flex justify-center items-center bg-zinc-50">
+        <span className="loading loading-spinner loading-xl text-orange-600"></span>
+      </div>
+    );
   }
 
   if (!isSignedIn) {
@@ -59,70 +99,18 @@ const HomePage = () => {
 
   const { text: greeting, icon: GreetingIcon } = getGreeting();
 
-  const announcements = [
-    {
-      title: "Important System Maintenance",
-      content:
-        "The platform will undergo scheduled maintenance this weekend from Friday 10 PM to Saturday 2 AM EST. During this period, all services including courses, assignments, and the discussion forum will be temporarily unavailable. We're implementing critical updates to enhance system performance, security patches, and introducing new features that will improve your learning experience. Please save your progress and plan your studies accordingly.",
-      timestamp: "2 hours ago",
-    },
-    {
-      title: "New Learning Paths Available",
-      content:
-        "We're excited to announce three comprehensive new learning paths designed to help you stay ahead in the tech industry. The Cloud Computing path covers AWS, Azure, and GCP fundamentals, moving to advanced topics like serverless architecture and cloud security. The Data Science track includes Python, R, statistical analysis, machine learning, and real-world projects. The Mobile Development path features both iOS and Android development, cross-platform frameworks, and mobile UI/UX best practices. Each path includes hands-on projects, expert-led videos, and industry-relevant assignments.",
-      timestamp: "1 day ago",
-    },
-    {
-      title: "Community Challenge",
-      content:
-        "Join our monthly coding challenge focused on 'Building Sustainable Solutions'! This month, we're challenging you to create applications that address environmental sustainability. Projects can range from carbon footprint calculators to smart energy management systems. The top three solutions will receive premium course subscriptions, exclusive mentorship sessions with industry experts, and special recognition badges on their profiles. Submission deadline is the 25th of this month. Detailed requirements and judging criteria are available in the challenge documentation.",
-      timestamp: "2 days ago",
-    },
-    {
-      title: "Platform Update",
-      content:
-        "We've significantly enhanced our code editor to provide you with a better learning experience. New features include improved syntax highlighting with support for over 40 programming languages, real-time error detection and suggestions, integrated debugging tools with breakpoint support and variable inspection, and a new AI-powered code completion system. The editor now also supports custom themes, key bindings, and direct integration with GitHub for easier project management. These updates are designed to make your coding practice more efficient and enjoyable.",
-      timestamp: "3 days ago",
-    },
-  ];
-
-  const notifications = [
-    {
+  const notifications: any[] = [
+    /*     {
       title: "New Course Available",
       description: "Advanced React Development is now available",
       timestamp: "1 hour ago",
-    },
-    {
-      title: "Achievement Unlocked",
-      description: "You've completed 5 days study streak!",
-      timestamp: "3 hours ago",
-    },
-    {
-      title: "Course Update",
-      description: "Python Basics has new content available",
-      timestamp: "Yesterday",
-    },
-    {
-      title: "Course Update",
-      description: "Python Basics has new content available",
-      timestamp: "Yesterday",
-    },
-    {
-      title: "Course Update",
-      description: "Python Basics has new content available",
-      timestamp: "Yesterday",
-    },
-    {
-      title: "Course Update",
-      description: "Python Basics has new content available",
-      timestamp: "Yesterday",
-    },
+    }, */
   ];
 
   return (
-    <div className="w-full min-h-screen p-6 space-y-8">
-      <div className="flex items-center space-x-4">
-        <div className="h-16 w-16 rounded-full border-2 border-orange-600 overflow-hidden">
+    <div className="w-full min-h-screen p-6 space-y-8 bg-zinc-50">
+      <div className="flex items-center space-x-4 p-4 rounded-xl bg-orange-500 bg-[url('/orange_gradient.png')] bg-cover bg-center ">
+        <div className="h-16 w-16 rounded-full border-2 border-orange-600 overflow-hidden flex-shrink-0">
           <img
             src={user.imageUrl}
             alt="Profile"
@@ -130,17 +118,17 @@ const HomePage = () => {
           />
         </div>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-orange-600">
+          <h1 className="text-2xl font-bold tracking-tight text-white drop-shadow-lg">
             Welcome back, {user.fullName}!
           </h1>
-          <div className="flex items-center gap-2 text-muted-foreground">
+          <div className="flex items-center gap-2 text-zinc-100 drop-shadow-md">
             <GreetingIcon className="h-4 w-4" />
             <p>{greeting}, here's an overview of your learning progress</p>
           </div>
         </div>
       </div>
       <div className="flex gap-4">
-        <div className="flex-grow">
+        <div className="flex-grow ">
           <Card className="h-[500px] overflow-hidden border-orange-400">
             <CardHeader>
               <CardTitle className="text-orange-600 text-2xl -mb-3 flex items-center gap-2">
@@ -152,7 +140,7 @@ const HomePage = () => {
             </CardHeader>
             <CardContent className="h-[calc(500px-5rem)] overflow-y-auto">
               <div className="grid grid-cols-2 gap-4">
-                {announcements.map((announcement, index) => (
+                {announcements?.map((announcement, index) => (
                   <div
                     key={index}
                     className="space-y-2 hover:cursor-pointer rounded-lg hover:bg-orange-200 p-2 group"
@@ -165,7 +153,7 @@ const HomePage = () => {
                       {announcement.content}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {announcement.timestamp}
+                      {formattedDates[announcement.date]}
                     </p>
                   </div>
                 ))}
@@ -180,7 +168,10 @@ const HomePage = () => {
                         {selectedAnnouncement?.title}
                       </DialogTitle>
                       <DialogDescription className="text-sm text-muted-foreground">
-                        Posted {selectedAnnouncement?.timestamp}
+                        Posted{" "}
+                        {selectedAnnouncement
+                          ? formattedDates[selectedAnnouncement.date]
+                          : ""}
                       </DialogDescription>
                     </DialogHeader>
                     <div className="mt-4 text-sm">
@@ -192,7 +183,7 @@ const HomePage = () => {
             </CardContent>
           </Card>
         </div>
-        <div className="w-[30%] min-w-[300px]">
+        <div className="w-[30%] min-w-[300px] ">
           <Card className="h-[500px] overflow-hidden border-orange-400">
             <CardHeader>
               <CardTitle className="text-orange-600 text-2xl -mb-3 flex items-center gap-2">
@@ -204,7 +195,7 @@ const HomePage = () => {
             </CardHeader>
             <CardContent className="h-[calc(500px-5rem)] overflow-y-auto">
               <div className="space-y-4">
-                {notifications.map((notification, index) => (
+                {notifications?.map((notification, index) => (
                   <div key={index} className="flex items-center">
                     <div className="space-y-1 w-full">
                       <p className="text-sm font-medium leading-none">

@@ -76,7 +76,7 @@ interface AppSidebarProps {
 export function AppSidebar({ username, email, imageUrl }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" className="border-r ">
-      <SidebarHeader className="flex w-full justify-end   bg-zinc-50">
+      <SidebarHeader className="flex w-full justify-end bg-white">
         <div className="px-4 py-2 flex justify-center items-center">
           <Lightbulb className="h-auto w-8 text-orange-500 drop-shadow-lg" />
           <span className="font-jua text-2xl ml-2 text-orange-500 drop-shadow-xl">
@@ -85,7 +85,7 @@ export function AppSidebar({ username, email, imageUrl }: AppSidebarProps) {
         </div>
       </SidebarHeader>
       <Separator />
-      <SidebarContent className=" ">
+      <SidebarContent className=" bg-white">
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -106,7 +106,7 @@ export function AppSidebar({ username, email, imageUrl }: AppSidebarProps) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="bg-white">
         <SidebarMenuButton className="mb-1 bg-orange-200 rounded-full h-10 p-1 hover:bg-orange-300 hover:cursor-pointer">
           <Avatar className="border border-orange-600 flex justify-center items-center">
             {imageUrl ? (
