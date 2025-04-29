@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Lexend, DynaPuff } from "next/font/google";
+import { Providers } from "./providers";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -40,16 +41,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${lexendDeca.variable} ${jua.variable} antialiased`}
       >
-        <ClerkProvider
-          appearance={{
-            variables: {
-              colorPrimary: "#d69a6b",
-              colorText: "black",
-            },
-          }}
-        >
-          {children}
-        </ClerkProvider>
+        <Providers>
+          <ClerkProvider
+            appearance={{
+              variables: {
+                colorPrimary: "#d69a6b",
+                colorText: "black",
+              },
+            }}
+          >
+            {children}
+          </ClerkProvider>
+        </Providers>
       </body>
     </html>
   );

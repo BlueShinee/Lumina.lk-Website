@@ -2,6 +2,7 @@
 
 /* import { currentUser } from "@clerk/nextjs/server"; */
 import { useUser } from "@clerk/nextjs";
+import { useQuery } from "@tanstack/react-query";
 
 import { getAnnouncements } from "@/database/index";
 
@@ -50,27 +51,18 @@ const formatDate = (dateNumber: number) => {
 };
 
 const HomePage = () => {
-  let [announcements, setannouncements] =
-    React.useState<announcementType | null>(null);
-  let [formattedDates, setFormattedDates] = React.useState<{
-    [key: number]: string;
-  }>({});
+  const { data: announcements, isLoading } = useQuery<announcementType>({
+    queryKey: ["announcements"],
+    queryFn: getAnnouncements,
+  });
 
-  React.useEffect(() => {
-    async function fetchAnn() {
-      let announcements = await getAnnouncements();
-      setannouncements(announcements);
-
-      // Format dates for all announcements
-      const dates = announcements.reduce((acc, ann) => {
-        acc[ann.date] = formatDate(ann.date);
-        return acc;
-      }, {} as { [key: number]: string });
-
-      setFormattedDates(dates);
-    }
-    fetchAnn();
-  }, []);
+  const formattedDates = React.useMemo(() => {
+    if (!announcements) return {};
+    return announcements.reduce((acc, ann) => {
+      acc[ann.date] = formatDate(ann.date);
+      return acc;
+    }, {} as { [key: number]: string });
+  }, [announcements]);
 
   const [selectedAnnouncement, setSelectedAnnouncement] = React.useState<
     announcementType[number] | null
@@ -130,57 +122,65 @@ const HomePage = () => {
       <div className="flex gap-4">
         <div className="flex-grow ">
           <Card className="h-[500px] overflow-hidden border-orange-400">
-            <CardHeader>
-              <CardTitle className="text-orange-600 text-2xl -mb-3 flex items-center gap-2">
-                Announcements
-              </CardTitle>
-              <CardDescription>
-                Latest announcements and updates
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="h-[calc(500px-5rem)] overflow-y-auto">
-              <div className="grid grid-cols-2 gap-4">
-                {announcements?.map((announcement, index) => (
-                  <div
-                    key={index}
-                    className="space-y-2 hover:cursor-pointer rounded-lg hover:bg-orange-200 p-2 group"
-                    onClick={() => setSelectedAnnouncement(announcement)}
-                  >
-                    <p className="text-sm font-medium leading-none group-hover:text-orange-500 transition-colors">
-                      {announcement.title}
-                    </p>
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {announcement.content}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {formattedDates[announcement.date]}
-                    </p>
-                  </div>
-                ))}
-
-                <Dialog
-                  open={selectedAnnouncement !== null}
-                  onOpenChange={() => setSelectedAnnouncement(null)}
-                >
-                  <DialogContent className="max-w-2xl">
-                    <DialogHeader>
-                      <DialogTitle className="text-xl font-bold text-orange-600">
-                        {selectedAnnouncement?.title}
-                      </DialogTitle>
-                      <DialogDescription className="text-sm text-muted-foreground">
-                        Posted{" "}
-                        {selectedAnnouncement
-                          ? formattedDates[selectedAnnouncement.date]
-                          : ""}
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="mt-4 text-sm">
-                      {selectedAnnouncement?.content}
-                    </div>
-                  </DialogContent>
-                </Dialog>
+            {isLoading ? (
+              <div className="w-full h-full flex justify-center items-center">
+                <span className="loading loading-spinner loading-xl text-orange-600"></span>
               </div>
-            </CardContent>
+            ) : (
+              <>
+                <CardHeader>
+                  <CardTitle className="text-orange-600 text-2xl -mb-3 flex items-center gap-2">
+                    Announcements
+                  </CardTitle>
+                  <CardDescription>
+                    Latest announcements and updates
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="h-[calc(500px-5rem)] overflow-y-auto">
+                  <div className="grid grid-cols-2 gap-4">
+                    {announcements?.map((announcement, index) => (
+                      <div
+                        key={index}
+                        className="space-y-2 hover:cursor-pointer rounded-lg hover:bg-orange-200 p-2 group"
+                        onClick={() => setSelectedAnnouncement(announcement)}
+                      >
+                        <p className="text-sm font-medium leading-none group-hover:text-orange-500 transition-colors">
+                          {announcement.title}
+                        </p>
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {announcement.content}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {formattedDates[announcement.date]}
+                        </p>
+                      </div>
+                    ))}
+
+                    <Dialog
+                      open={selectedAnnouncement !== null}
+                      onOpenChange={() => setSelectedAnnouncement(null)}
+                    >
+                      <DialogContent className="max-w-2xl">
+                        <DialogHeader>
+                          <DialogTitle className="text-xl font-bold text-orange-600">
+                            {selectedAnnouncement?.title}
+                          </DialogTitle>
+                          <DialogDescription className="text-sm text-muted-foreground">
+                            Posted{" "}
+                            {selectedAnnouncement
+                              ? formattedDates[selectedAnnouncement.date]
+                              : ""}
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="mt-4 text-sm">
+                          {selectedAnnouncement?.content}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </CardContent>{" "}
+              </>
+            )}
           </Card>
         </div>
         <div className="w-[30%] min-w-[300px] ">
