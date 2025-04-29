@@ -97,7 +97,7 @@ export function AppSidebar({ username, email, imageUrl }: AppSidebarProps) {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
-                    className={`hover:bg-orange-200 text-zinc-700 hover:text-orange-600 ${
+                    className={`hover:bg-orange-200 text-zinc-700 hover:text-orange-600 active:text-orange-600 active:scale-95 transition-all duration-150 ease-in-out active:bg-orange-300 ${
                       pathname === item.url
                         ? "bg-orange-200 text-orange-600"
                         : ""
@@ -115,7 +115,7 @@ export function AppSidebar({ username, email, imageUrl }: AppSidebarProps) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="bg-white">
-        <SidebarMenuButton className="mb-1 bg-orange-200 rounded-full h-10 p-1 hover:bg-orange-300 hover:cursor-pointer">
+        <SidebarMenuButton className="mb-1 bg-orange-200 active:bg-orange-400 rounded-full h-10 p-1 hover:bg-orange-300 hover:cursor-pointer">
           <Avatar className="border border-orange-600 flex justify-center items-center">
             {imageUrl ? (
               <AvatarImage src={imageUrl} />

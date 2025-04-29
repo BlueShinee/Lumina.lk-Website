@@ -1,7 +1,9 @@
 import "dotenv/config";
 import { drizzle } from "drizzle-orm/libsql";
 
-import { announcementTable } from "./db/schema";
+import { eq } from "drizzle-orm";
+
+import { announcementTable,mcqQuestionsTable,mcqTestsTable } from "./db/schema";
 
 
 // You can specify any property from the libsql connection options
@@ -17,3 +19,14 @@ export const getAnnouncements = async () => {
   const announcements = await db.select().from(announcementTable);
   return announcements;
 };
+
+export const getMcqTests = async () => {
+  const McqTests = await db.select().from(mcqTestsTable);
+  return McqTests;
+};
+
+export const getMcqQuestions = async (Testid:number) => {
+  const McqQestions = await db.select().from(mcqQuestionsTable).where(eq(mcqQuestionsTable.testId,Testid));
+  return McqQestions;
+};
+
