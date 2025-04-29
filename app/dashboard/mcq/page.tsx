@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { redirect } from "next/navigation";
 
 export default function page() {
     let score 
@@ -77,7 +78,8 @@ export default function page() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {mcqTestData?.map((test, index) => (
           <Card
-            key={index}
+                key={index}
+                onClick={()=>{redirect("/mcq/"+test.id)}}
             className="hover:border-orange-400 transition-colors cursor-pointer"
           >
             <CardHeader>
