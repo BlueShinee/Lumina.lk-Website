@@ -98,6 +98,10 @@ export default function page() {
         console.log('Selected answers:', selectedAnswers);
         console.log('Answers as integer:', answersint);
     };
+    
+    if (McqResultSubmition.isSuccess) {
+        redirect(`/mcq-result/${testId}`);
+    }
 
     return (
         <div className="w-full min-h-screen p-6 space-y-8 bg-zinc-50">
@@ -141,9 +145,9 @@ export default function page() {
                 <div className="flex justify-center pt-6">
                     <button
                         onClick={handleSubmit}
-                        className="btn border-orange-600 bg-orange-500 text-white px-8 py-2 rounded-md hover:bg-orange-600 transition-colors active:bg-orange-700"
+                        className="btn border-orange-600 bg-orange-500 text-white w-48 px-8 py-2 rounded-md hover:bg-orange-600 transition-colors active:bg-orange-700"
                     >
-                        {McqResultSubmition.isPending ? 'Submitting...' : 'Submit Answers'}
+                        {McqResultSubmition.isPending ? <span className="loading loading-spinner loading-xs"></span> : 'Submit Answers'}
                     </button>
                 </div>
             </div>
