@@ -5,9 +5,10 @@ import { getMcqQuestions, getMcqResults } from "../../../database/index"
 import { redirect, useParams } from "next/navigation";
 import React from 'react';
 import { useUser } from "@clerk/nextjs";
-import { cn } from "@/lib/utils"; 
+import { cn } from "@/lib/utils";
 
 export default function page() {
+    const [userAnswers, SetUserAnswers] = React.useState([])
     const { isSignedIn, user, isLoaded } = useUser();
     const params = useParams();
     const testId = parseInt(params.id);
@@ -20,11 +21,26 @@ export default function page() {
         queryKey: ['McqQuestions', testId],
         queryFn: () => getMcqQuestions(testId)
     });
-    
-    const { data:results , isLoadingResults , isErrorResults } = useQuery({
+
+    const { data: results, isLoading: isLoadingResults, isError: isErrorResults, isSuccess } = useQuery({
         queryKey: ['McqResults', user?.id, testId],
-        queryFn: () => getMcqResults(user?.id, testId)
+        queryFn: () => getMcqResults(user?.id, testId),
+        enabled: !!user?.id && !!testId
     })
+
+    React.useEffect(() => {
+        if (results) {
+            const answerString = results.ansewers.toString();
+            const separatedAnswers = answerString.split('').map(Number);
+            SetUserAnswers(separatedAnswers);
+        }
+    }, [isSuccess])
+    /*     if (!isLoadingResults) {
+            const answerString = results.ansewers.toString();
+            const separatedAnswers = answerString.split('').map(Number);
+            SetUserAnswers(separatedAnswers);
+            console.log(userAnswers);
+        } */
 
     if (isLoading || !isLoaded || isLoadingResults) {
         return (
@@ -55,24 +71,40 @@ export default function page() {
             <div className="flex flex-col items-center space-y-2">
                 <h1 className="text-2xl font-bold tracking-tight text-orange-600">MCQ Results</h1>
                 <p className="text-zinc-600">Review your answers for this MCQ test.</p>
+                <p className={cn("w-14 h-14 border-4 font-bold rounded-full flex justify-center items-center",
+                    {
+                        "border-green-500": (results.score / questions.length) * 100 >= 75,
+                        "border-yellow-500":
+                            (results.score / questions.length) * 100 >= 50 &&
+                            (results.score / questions.length) * 100 < 75,
+                        "border-orange-500":
+                            (results.score / questions.length) * 100 >= 25 &&
+                            (results.score / questions.length) * 100 < 50,
+                        "border-red-500": (results.score / questions.length) * 100 < 25,
+                    }
+                )}>{results.score / questions.length * 100}%</p>
             </div>
             <div className="max-w-3xl mx-auto space-y-6">
                 {questions?.map((question, index) => (
-                    <div key={question.id} className="bg-white p-6 rounded-lg shadow-sm border border-zinc-200 space-y-4">
+                    <div key={question.id} className={cn(" p-6 rounded-lg shadow-sm border border-zinc-200 space-y-4", userAnswers[question.Qnumber - 1] == question.answer ? "bg-green-200 border-green-400" : "bg-red-200 border-red-400")}>
                         <div className="flex items-start gap-3">
                             <span className="text-orange-600 font-semibold">{question.Qnumber}.</span>
                             <p className="text-zinc-800">{question.question}</p>
                         </div>
                         <div className="space-y-3 pl-8">
                             {[1, 2, 3, 4, 5].map((optionNum) => (
-                                <label key={optionNum} className={cn("flex items-center gap-3  p-2 rounded-md transition-colors", optionNum === question.answer ? "bg-green-400" : "bg-white")}>
+                                <label key={optionNum} className={cn("flex items-center gap-3 p-2 rounded-md transition-colors",
+                                    optionNum === question.answer ? "bg-green-400" :
+                                        userAnswers[question.Qnumber - 1] === optionNum ? "bg-red-400" :
+                                            "bg-white"
+                                )}>
                                     <input
                                         type="radio"
                                         name={`question-${question.id}`}
-                                        checked={question.answer === optionNum}
+                                        checked={userAnswers[question.Qnumber - 1] === optionNum}
                                         value={optionNum}
                                         disabled
-                                        className="radio radio-neutral bg-white checked:bg-white border-zinc-300  disabled:opacity-100"
+                                        className="radio radio-neutral bg-white checked:bg-white border-zinc-300 disabled:opacity-100"
                                     />
                                     <span className="text-zinc-700">{question[`option${optionNum}`]}</span>
                                 </label>
@@ -80,6 +112,14 @@ export default function page() {
                         </div>
                     </div>
                 ))}
+                <div className="flex justify-center pt-6">
+                    <button
+                        onClick={() => redirect(`/mcq/${testId}`)}
+                        className="btn border-orange-600 bg-orange-500 text-white w-48 px-8 py-2 rounded-md hover:bg-orange-600 transition-colors active:bg-orange-700"
+                    >
+                        Retake Test
+                    </button>
+                </div>
             </div>
         </div>
     );
