@@ -31,7 +31,7 @@ export const mcqQuestionsTable = sqliteTable("mcq_questions", {
 export const mcqResults = sqliteTable("mcq_results", {
   id: int().primaryKey({ autoIncrement: true }),
   testId: int().notNull(),
-  userId: int().notNull(),
+  userId: text().notNull(),
   score: int().notNull(),
   ansewers: int().notNull(),
 });

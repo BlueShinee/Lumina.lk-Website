@@ -14,11 +14,15 @@ export default function page() {
     const [selectedAnswers, setSelectedAnswers] = React.useState({});
     const [unAnswered, setUnAnswered] = React.useState(false);
     const { isSignedIn, user, isLoaded } = useUser();
-    
+
     if (!isSignedIn && isLoaded) {
         redirect("/signin");
     }
-
+    
+/*     if (isLoaded) {
+        console.log(user.id);
+    }
+ */
     const params = useParams();
     const testId = parseInt(params.id);
 
@@ -28,7 +32,7 @@ export default function page() {
     });
 
     const McqResultSubmition = useMutation({
-        mutationFn: InsertMcqResults,
+        mutationFn: ({ userId, testId, score, answersint }) => InsertMcqResults(userId, testId, score, parseInt(answersint)),
     })
 
     console.log(questions);
@@ -83,6 +87,13 @@ export default function page() {
             .map(question => selectedAnswers[question.id])
             .join('');
 
+        McqResultSubmition.mutate({
+            userId: user.id,
+            testId: testId,
+            score: score,
+            answersint: answersint
+        });
+
         console.log('Score:', score, 'out of', questions.length);
         console.log('Selected answers:', selectedAnswers);
         console.log('Answers as integer:', answersint);
@@ -132,7 +143,7 @@ export default function page() {
                         onClick={handleSubmit}
                         className="btn border-orange-600 bg-orange-500 text-white px-8 py-2 rounded-md hover:bg-orange-600 transition-colors active:bg-orange-700"
                     >
-                        Submit Answers
+                        {McqResultSubmition.isPending ? 'Submitting...' : 'Submit Answers'}
                     </button>
                 </div>
             </div>

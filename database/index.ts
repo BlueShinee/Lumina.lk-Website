@@ -1,10 +1,14 @@
 import "dotenv/config";
 import { drizzle } from "drizzle-orm/libsql";
 
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
-import { announcementTable,mcqQuestionsTable,mcqTestsTable,mcqResults } from "./db/schema";
-
+import {
+  announcementTable,
+  mcqQuestionsTable,
+  mcqTestsTable,
+  mcqResults,
+} from "./db/schema";
 
 // You can specify any property from the libsql connection options
 export const db = drizzle({
@@ -25,16 +29,36 @@ export const getMcqTests = async () => {
   return McqTests;
 };
 
-export const getMcqQuestions = async (Testid:number) => {
-  const McqQestions = await db.select().from(mcqQuestionsTable).where(eq(mcqQuestionsTable.testId,Testid));
+export const getMcqQuestions = async (Testid: number) => {
+  const McqQestions = await db
+    .select()
+    .from(mcqQuestionsTable)
+    .where(eq(mcqQuestionsTable.testId, Testid));
   return McqQestions;
 };
 
-export const InsertMcqResults = async (userId:number,testId:number,score:number,ansewers:number) => {
-    await db.insert(mcqResults).values({
-        userId: userId,
-        testId: testId,
-        score: score,
-        ansewers:ansewers
-    })
-}
+export const InsertMcqResults = async (
+  userId: string,
+  testId: number,
+  score: number,
+  ansewers: number
+) => {
+  const existingResult = await db
+    .select()
+    .from(mcqResults)
+    .where(and(eq(mcqResults.userId, userId), eq(mcqResults.testId, testId)));
+
+  if (existingResult.length > 0) {
+      await db.update(mcqResults)
+          .set({ score: score, ansewers: ansewers })
+          .where(and(eq(mcqResults.userId, userId), eq(mcqResults.testId, testId)));
+      return;
+  }
+
+  await db.insert(mcqResults).values({
+    userId: userId,
+    testId: testId,
+    score: score,
+    ansewers: ansewers,
+  });
+};
