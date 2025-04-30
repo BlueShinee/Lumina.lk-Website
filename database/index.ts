@@ -62,3 +62,11 @@ export const InsertMcqResults = async (
     ansewers: ansewers,
   });
 };
+
+export const getMcqResults = async (userId: string, testId: number) => {
+  const McqResults = await db
+   .select()
+   .from(mcqResults)
+   .where(and(eq(mcqResults.userId, userId), eq(mcqResults.testId, testId)));
+  return McqResults[0];
+}
