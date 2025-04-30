@@ -10,6 +10,7 @@ import { AlertTriangle } from "lucide-react";
 export default function page() {
 
     const [selectedAnswers, setSelectedAnswers] = React.useState({});
+    const [unAnswered, setUnAnswered] = React.useState(false);
 
     const params = useParams();
     const testId = parseInt(params.id);
@@ -52,13 +53,26 @@ export default function page() {
     };
 
     const handleSubmit = () => {
-        // Submit functionality will be implemented later
+        // Check if all questions are answered
+        const unansweredQuestions = questions.length !== Object.keys(selectedAnswers).length;
+        setUnAnswered(unansweredQuestions);
+
+        if (unansweredQuestions) {
+            return;
+        }
+
+        // Calculate score by comparing selected answers with correct answers
+        const score = questions.reduce((total, question) => {
+            return total + (selectedAnswers[question.id] === question.answer ? 1 : 0);
+        }, 0);
+
+        console.log('Score:', score, 'out of', questions.length);
         console.log('Selected answers:', selectedAnswers);
     };
 
     return (
         <div className="w-full min-h-screen p-6 space-y-8 bg-zinc-50">
-                    <div className="flex flex-col items-center space-y-2">
+            <div className="flex flex-col items-center space-y-2">
                 <h1 className="text-2xl font-bold tracking-tight text-orange-600">MCQ Questions</h1>
                 <p className="text-zinc-600">Answer the following multiple choice questions.</p>
             </div>
@@ -86,10 +100,19 @@ export default function page() {
                         </div>
                     </div>
                 ))}
+                {unAnswered && (
+                    <Alert variant="destructive" className="mt-4 bg-red-50 border-red-200">
+                        <AlertTriangle className="h-4 w-4 text-red-500" />
+                        <AlertTitle className="text-red-500">Incomplete Answers</AlertTitle>
+                        <AlertDescription className="text-red-600">
+                            Please answer all questions before submitting.
+                        </AlertDescription>
+                    </Alert>
+                )}
                 <div className="flex justify-center pt-6">
                     <button
                         onClick={handleSubmit}
-                        className="btn btn-warning text-white px-8 py-2 rounded-md hover:bg-orange-600 transition-colors"
+                        className="btn border-orange-600 bg-orange-500 text-white px-8 py-2 rounded-md hover:bg-orange-600 transition-colors active:bg-orange-700"
                     >
                         Submit Answers
                     </button>
@@ -98,4 +121,3 @@ export default function page() {
         </div>
     );
 }
-                                                                                                                                                                                
