@@ -1,5 +1,5 @@
 "use client";
-
+import { useUser } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import { getMcqTests } from "@/database/index";
 import {
@@ -23,8 +23,10 @@ export default function page() {
     queryKey: ["McqTests"],
     queryFn: getMcqTests,
   });
+    
+    const {  user, isLoaded } = useUser();
 
-  if (isLoading) {
+  if (isLoading || !isLoaded) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
         <span className="loading loading-spinner loading-xl text-orange-600"></span>

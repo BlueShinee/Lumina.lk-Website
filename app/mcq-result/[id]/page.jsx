@@ -71,18 +71,19 @@ export default function page() {
             <div className="flex flex-col items-center space-y-2">
                 <h1 className="text-2xl font-bold tracking-tight text-orange-600">MCQ Results</h1>
                 <p className="text-zinc-600">Review your answers for this MCQ test.</p>
-                <p className={cn("w-14 h-14 border-4 font-bold rounded-full flex justify-center items-center",
+                <div className={cn("radial-progress font-bold ",
                     {
-                        "border-green-500": (results.score / questions.length) * 100 >= 75,
-                        "border-yellow-500":
+                        "text-green-500": (results.score / questions.length) * 100 >= 75,
+                        "text-yellow-500":
                             (results.score / questions.length) * 100 >= 50 &&
                             (results.score / questions.length) * 100 < 75,
-                        "border-orange-500":
+                        "text-orange-500":
                             (results.score / questions.length) * 100 >= 25 &&
                             (results.score / questions.length) * 100 < 50,
-                        "border-red-500": (results.score / questions.length) * 100 < 25,
+                        "text-red-500": (results.score / questions.length) * 100 < 25,
                     }
-                )}>{results.score / questions.length * 100}%</p>
+                )} style={{ "--value": results.score / questions.length * 100, "--size": "3.5rem", "--thickness": "5px" } /* as React.CSSProperties */}
+                    aria-valuenow={20} role="progressbar">{results.score / questions.length * 100}%</div>
             </div>
             <div className="max-w-3xl mx-auto space-y-6">
                 {questions?.map((question, index) => (
