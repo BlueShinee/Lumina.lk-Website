@@ -1,7 +1,7 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query";
-import { getMcqQuestions } from "../../../database/index"
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getMcqQuestions, InsertMcqResults } from "../../../database/index"
 import { useParams } from "next/navigation";
 import React from 'react';
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
@@ -19,6 +19,10 @@ export default function page() {
         queryKey: ['McqQuestions', testId],
         queryFn: () => getMcqQuestions(testId)
     });
+
+    const McqResultSubmition = useMutation({
+        mutationFn: InsertMcqResults,
+    })
 
     console.log(questions);
     if (isLoading) {
@@ -66,8 +70,15 @@ export default function page() {
             return total + (selectedAnswers[question.id] === question.answer ? 1 : 0);
         }, 0);
 
+        // Create a concatenated number from answers in question order
+        const answersint = questions
+            .sort((a, b) => a.Qnumber - b.Qnumber)
+            .map(question => selectedAnswers[question.id])
+            .join('');
+
         console.log('Score:', score, 'out of', questions.length);
         console.log('Selected answers:', selectedAnswers);
+        console.log('Answers as integer:', answersint);
     };
 
     return (
