@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/libsql";
 
 import { eq } from "drizzle-orm";
 
-import { announcementTable,mcqQuestionsTable,mcqTestsTable } from "./db/schema";
+import { announcementTable,mcqQuestionsTable,mcqTestsTable,mcqResults } from "./db/schema";
 
 
 // You can specify any property from the libsql connection options
@@ -30,3 +30,11 @@ export const getMcqQuestions = async (Testid:number) => {
   return McqQestions;
 };
 
+export const InsertMcqResults = async (userId:number,testId:number,score:number,ansewers:number) => {
+    await db.insert(mcqResults).values({
+        userId: userId,
+        testId: testId,
+        score: score,
+        ansewers:ansewers
+    })
+}
