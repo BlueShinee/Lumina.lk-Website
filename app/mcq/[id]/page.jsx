@@ -2,15 +2,22 @@
 
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getMcqQuestions, InsertMcqResults } from "../../../database/index"
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import React from 'react';
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
+
 
 export default function page() {
 
     const [selectedAnswers, setSelectedAnswers] = React.useState({});
     const [unAnswered, setUnAnswered] = React.useState(false);
+    const { isSignedIn, user, isLoaded } = useUser();
+    
+    if (!isSignedIn && isLoaded) {
+        redirect("/signin");
+    }
 
     const params = useParams();
     const testId = parseInt(params.id);
@@ -25,7 +32,7 @@ export default function page() {
     })
 
     console.log(questions);
-    if (isLoading) {
+    if (isLoading || !isLoaded) {
         return (
             <div className="w-full h-screen flex justify-center items-center">
                 <span className="loading loading-spinner loading-xl text-orange-600"></span>
