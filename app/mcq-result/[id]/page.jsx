@@ -1,7 +1,7 @@
 "use client"
 
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { getMcqQuestions, InsertMcqResults } from "../../../database/index"
+import { getMcqQuestions, getMcqResults } from "../../../database/index"
 import { redirect, useParams } from "next/navigation";
 import React from 'react';
 import { useUser } from "@clerk/nextjs";
@@ -21,9 +21,12 @@ export default function page() {
         queryFn: () => getMcqQuestions(testId)
     });
     
-    
+    const { data:results , isLoadingResults , isErrorResults } = useQuery({
+        queryKey: ['McqResults', user?.id, testId],
+        queryFn: () => getMcqResults(user?.id, testId)
+    })
 
-    if (isLoading || !isLoaded) {
+    if (isLoading || !isLoaded || isLoadingResults) {
         return (
             <div className="w-full h-screen flex justify-center items-center">
                 <span className="loading loading-spinner loading-xl text-orange-600"></span>
@@ -31,7 +34,7 @@ export default function page() {
         );
     }
 
-    if (isError) {
+    if (isError || isErrorResults) {
         return (
             <div className="w-full h-screen flex flex-col gap-4 justify-center items-center">
                 <div className="text-orange-600 motion-preset-blink">
