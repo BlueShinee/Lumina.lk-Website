@@ -20,6 +20,8 @@ import { usePathname } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+export const dynamic = "force-dynamic";
+
 import {
   Sidebar,
   SidebarContent,

@@ -34,6 +34,8 @@ import {
   Bell,
 } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 type announcementType = Awaited<ReturnType<typeof getAnnouncements>>;
 
 const formatDate = (dateNumber: number) => {

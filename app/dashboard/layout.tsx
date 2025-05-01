@@ -3,6 +3,8 @@ import { currentUser } from "@clerk/nextjs/server";
 import { AppSidebar } from "@/components/Dashboard/sidebar";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
   const user = await currentUser();
   if (!user) {
     redirect('/signin')
