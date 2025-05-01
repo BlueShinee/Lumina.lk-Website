@@ -1,7 +1,8 @@
 "use client";
+
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
-import { getMcqTests } from "@/database/index";
+import { getMcqTests, getMcqAllResults } from "@/database/index";
 import {
   Card,
   CardContent,
@@ -11,22 +12,46 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default function page() {
-    let score 
-    
+export default function Page() {
+    let score
+  const [DoneTests , setDoneTests] = useState([] as any)
+
+  const { user, isLoaded } = useUser();
+
   const {
     data: mcqTestData,
     isLoading,
-    isError,
+      isError
   } = useQuery({
     queryKey: ["McqTests"],
     queryFn: getMcqTests,
   });
-    
-    const {  user, isLoaded } = useUser();
 
-  if (isLoading || !isLoaded) {
+  const {
+    data: mcqResults,
+    isLoading: loadingResults,
+    isError: errResults,
+    isSuccess: successResults,
+  } = useQuery({
+    queryKey: ["McqResults", user?.id],
+    queryFn: () => user? getMcqAllResults(user.id) : [],
+    enabled: isLoaded,
+  });
+    
+    useEffect(() => {
+        if (successResults && mcqResults) {
+          let resultTestIds : any = []
+          mcqResults.map((v, i) => {
+            resultTestIds.push(v.testId)
+          })
+        setDoneTests(resultTestIds)
+      }
+    },[successResults])
+    
+    
+  if (isLoading || !isLoaded || loadingResults) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
         <span className="loading loading-spinner loading-xl text-orange-600"></span>
@@ -34,7 +59,7 @@ export default function page() {
     );
   }
   // error page
-  if (isError) {
+  if (isError || errResults) {
     return (
       <div className="w-full h-screen flex flex-col gap-4 justify-center items-center">
         <div className="text-orange-600 motion-preset-blink ">
@@ -80,9 +105,51 @@ export default function page() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {mcqTestData?.map((test, index) => (
           <Card
-                key={index}
-                onClick={()=>{redirect("/mcq/"+test.id)}}
-            className="hover:border-orange-400 transition-colors cursor-pointer"
+            key={index}
+            onClick={() => {
+              redirect("/mcq/" + test.id);
+            }}
+            className={cn(
+              " transition-colors cursor-pointer",
+              DoneTests.includes(test.id)
+                ? {
+                    "border-green-500 bg-green-200":
+                      ((mcqResults?.find((result) => result.testId === test.id)
+                        ?.score ?? 0) /
+                        test.questions) *
+                        100 >=
+                      75,
+                    "border-yellow-500 bg-yellow-100":
+                      ((mcqResults?.find((result) => result.testId === test.id)
+                        ?.score ?? 0) /
+                        test.questions) *
+                        100 >=
+                        50 &&
+                      ((mcqResults?.find((result) => result.testId === test.id)
+                        ?.score ?? 0) /
+                        test.questions) *
+                        100 <
+                        75,
+                    "border-orange-500 bg-orange-200":
+                      ((mcqResults?.find((result) => result.testId === test.id)
+                        ?.score ?? 0) /
+                        test.questions) *
+                        100 >=
+                        25 &&
+                      ((mcqResults?.find((result) => result.testId === test.id)
+                        ?.score ?? 0) /
+                        test.questions) *
+                        100 <
+                        50,
+                    "border-red-500 bg-red-200":
+                      ((mcqResults?.find((result) => result.testId === test.id)
+                        ?.score ?? 0) /
+                        test.questions) *
+                        100 <
+                      25,
+                  }
+                : "hover:border-orange-400"
+            )}
           >
             <CardHeader>
               <CardTitle className="text-orange-600">{test.name}</CardTitle>
@@ -97,27 +164,68 @@ export default function page() {
                 <span>{test.questions} Questions</span>
                 <div
                   className={cn(
-                    "relative w-9 h-auto border-2 rounded-full aspect-square",
-                    score == undefined ? "hidden" : "flex",
+                    "  flex radial-progress font-bold justify-center items-center",
+                    !DoneTests.includes(test.id) ? "hidden" : "flex",
                     {
-                      "border-green-500": (score / test.questions) * 100 >= 75,
-                      "border-yellow-500":
-                        (score / test.questions) * 100 >= 50 &&
-                        (score / test.questions) * 100 < 75,
-                      "border-orange-500":
-                        (score / test.questions) * 100 >= 25 &&
-                        (score / test.questions) * 100 < 50,
-                      "border-red-500": (score / test.questions) * 100 < 25,
+                      "text-green-500":
+                        ((mcqResults?.find(
+                          (result) => result.testId === test.id
+                        )?.score ?? 0) /
+                          test.questions) *
+                          100 >=
+                        75,
+                      "text-yellow-500":
+                        ((mcqResults?.find(
+                          (result) => result.testId === test.id
+                        )?.score ?? 0) /
+                          test.questions) *
+                          100 >=
+                          50 &&
+                        ((mcqResults?.find(
+                          (result) => result.testId === test.id
+                        )?.score ?? 0) /
+                          test.questions) *
+                          100 <
+                          75,
+                      "text-orange-500":
+                        ((mcqResults?.find(
+                          (result) => result.testId === test.id
+                        )?.score ?? 0) /
+                          test.questions) *
+                          100 >=
+                          25 &&
+                        ((mcqResults?.find(
+                          (result) => result.testId === test.id
+                        )?.score ?? 0) /
+                          test.questions) *
+                          100 <
+                          50,
+                      "text-red-500":
+                        ((mcqResults?.find(
+                          (result) => result.testId === test.id
+                        )?.score ?? 0) /
+                          test.questions) *
+                          100 <
+                        25,
                     }
                   )}
+                  style={{
+                    ["--value" as string]:
+                      ((mcqResults?.find((result) => result.testId === test.id)
+                        ?.score ?? 0) /
+                        test.questions) *
+                      100,
+                    ["--size" as string]: "3rem",
+                    ["--thickness" as string]: "3px",
+                  }}
+                  aria-valuenow={20}
+                  role="progressbar"
                 >
-                  <div
-                    className={
-                      "absolute inset-0 flex items-center text-[0.6rem] justify-center font-extrabold"
-                    }
-                  >
-                    {score !== undefined ? score / test.questions * 100 + "%" : "-"}
-                  </div>
+                  {((mcqResults?.find((result) => result.testId === test.id)
+                    ?.score ?? 0) /
+                    test.questions) *
+                    100}
+                  %
                 </div>
               </div>
             </CardContent>
@@ -127,3 +235,12 @@ export default function page() {
     </div>
   );
 }
+                  /* <div
+                    className={
+                      "absolute inset-0 flex items-center text-[0.6rem] justify-center font-extrabold"
+                    }
+                  >
+                    {mcqResults?.find(result => result.testId === test.id)?.score !== undefined
+                      ? ((mcqResults?.find(result => result.testId === test.id)?.score ?? 0) / test.questions * 100).toFixed(0) + "%"
+                      : "-"}
+                  </div> */

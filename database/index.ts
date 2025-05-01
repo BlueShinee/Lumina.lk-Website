@@ -49,10 +49,11 @@ export const InsertMcqResults = async (
     .where(and(eq(mcqResults.userId, userId), eq(mcqResults.testId, testId)));
 
   if (existingResult.length > 0) {
-      await db.update(mcqResults)
-          .set({ score: score, ansewers: ansewers })
-          .where(and(eq(mcqResults.userId, userId), eq(mcqResults.testId, testId)));
-      return;
+    await db
+      .update(mcqResults)
+      .set({ score: score, ansewers: ansewers })
+      .where(and(eq(mcqResults.userId, userId), eq(mcqResults.testId, testId)));
+    return;
   }
 
   await db.insert(mcqResults).values({
@@ -65,16 +66,18 @@ export const InsertMcqResults = async (
 
 export const getMcqResults = async (userId: string, testId: number) => {
   const McqResults = await db
-   .select()
-   .from(mcqResults)
-   .where(and(eq(mcqResults.userId, userId), eq(mcqResults.testId, testId)));
+    .select()
+    .from(mcqResults)
+    .where(and(eq(mcqResults.userId, userId), eq(mcqResults.testId, testId)));
   return McqResults[0];
-}
+};
 
-export const getMcqAllResults = async (userid: string) => {
-  const McqResults = await db
-  .select()
-  .from(mcqResults)
-  .where(eq(mcqResults.userId, userid));
-  return McqResults;
-}
+export const getMcqAllResults = async (userid: string ) => {
+
+    const McqResults = await db
+      .select()
+      .from(mcqResults)
+      .where(eq(mcqResults.userId, userid));
+    return McqResults;
+  
+};
