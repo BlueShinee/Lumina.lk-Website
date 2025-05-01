@@ -1,27 +1,27 @@
-"use client"
-
-import React from 'react'
-import { SearchBar } from '@/components/SearchBar'
-import { CategoryFilter } from '@/components/CatFilter'
+/* "use client"
+ */
+/* import React from 'react' */
+/* import { SearchBar } from '@/components/SearchBar'
+import { CategoryFilter } from '@/components/CatFilter' */
 import { UnderDevelopment } from '@/components/UnderDevelopment'
 
-const categories = [
+/* const categories = [
     "2025 A/l",
     "2026 A/l",
     "2027 A/l"
-]
+] */
 
 export default function page() {
     
-    const [searchTerm, setSearchTerm] = React.useState("");
+/*     const [searchTerm, setSearchTerm] = React.useState("");
     const [selectedCategory, setSelectedCategory] = React.useState("all");
-    
+     */
     return (
       <UnderDevelopment description='Tutes System is UnderDevelopment! This feature will be available In the beta stage.' />
     )
     
     
-  return (
+/*   return (
       <div className='bg-zinc-50 flex flex-col min-h-screen p-6'>
           <div className='flex flex-col mb-6'>
               <h1 className='text-2xl font-bold tracking-tight'>Study Materials</h1>
@@ -34,5 +34,5 @@ export default function page() {
               onCategoryChange={setSelectedCategory}
           />
       </div>
-  )
+  ) */
 }
