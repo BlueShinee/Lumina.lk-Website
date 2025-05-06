@@ -8,13 +8,6 @@ export const announcementTable = sqliteTable("announcement_table", {
   date: int({ mode: "number" }).notNull(),
 });
 
-export const mcqTestsTable = sqliteTable("mcq_tests", {
-  id: int().primaryKey({ autoIncrement: true }),
-  name: text().notNull(),
-  description: text().notNull(),
-  questions: int().notNull(),
-});
-
 export const mcqCatagories = sqliteTable("mcq_Cat", {
   id: int().primaryKey({ autoIncrement: true }),
   name: text().notNull(),
@@ -23,7 +16,7 @@ export const mcqCatagories = sqliteTable("mcq_Cat", {
 
 export const mcqQuestionsTable = sqliteTable("mcq_questions", {
   id: int().primaryKey({ autoIncrement: true }),
-  testId: int().notNull(),
+  catId: int().notNull(),
   question: text().notNull(),
   Qnumber: int().notNull(),
   option1: text().notNull(),
