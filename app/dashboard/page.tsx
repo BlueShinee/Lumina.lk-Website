@@ -143,10 +143,10 @@ const HomePage = () => {
                     {announcements?.map((announcement, index) => (
                       <div
                         key={index}
-                        className="space-y-2 hover:cursor-pointer rounded-lg hover:bg-orange-200 p-2 group"
+                        className="space-y-2 hover:cursor-pointer rounded-md hover:bg-zinc-200 p-3 group"
                         onClick={() => setSelectedAnnouncement(announcement)}
                       >
-                        <p className="text-sm font-medium leading-none group-hover:text-orange-500 transition-colors">
+                        <p className="text-sm font-medium leading-none transition-colors">
                           {announcement.title}
                         </p>
                         <p className="text-sm text-muted-foreground line-clamp-2">
@@ -164,7 +164,7 @@ const HomePage = () => {
                     >
                       <DialogContent className="max-w-2xl">
                         <DialogHeader>
-                          <DialogTitle className="text-xl font-bold text-orange-600">
+                          <DialogTitle className="text-xl font-bold text-zinc-900">
                             {selectedAnnouncement?.title}
                           </DialogTitle>
                           <DialogDescription className="text-sm text-muted-foreground">
