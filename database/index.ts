@@ -7,7 +7,8 @@ import {
   announcementTable,
   mcqQuestionsTable,
   mcqTestsTable,
-  mcqResults,
+    mcqResults,
+  mcqCatagories
 } from "./db/schema";
 
 // You can specify any property from the libsql connection options
@@ -81,3 +82,14 @@ export const getMcqAllResults = async (userid: string ) => {
     return McqResults;
   
 };
+
+
+
+export const getMcqCat = async () => {
+  const McqResults = await db
+    .select()
+    .from(mcqCatagories)
+  return McqResults;
+};
+
+

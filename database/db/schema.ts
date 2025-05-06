@@ -15,6 +15,12 @@ export const mcqTestsTable = sqliteTable("mcq_tests", {
   questions: int().notNull(),
 });
 
+export const mcqCatagories = sqliteTable("mcq_Cat", {
+  id: int().primaryKey({ autoIncrement: true }),
+  name: text().notNull(),
+  description: text().notNull(),
+});
+
 export const mcqQuestionsTable = sqliteTable("mcq_questions", {
   id: int().primaryKey({ autoIncrement: true }),
   testId: int().notNull(),
