@@ -57,7 +57,7 @@ const items = [
   },
   {
     title: "MCQ Tests",
-    url: "/dashboard/mcq",
+    url: "/dashboard/mcqv2",
     icon: NotepadText,
   },
   {

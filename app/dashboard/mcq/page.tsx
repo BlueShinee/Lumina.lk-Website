@@ -15,15 +15,15 @@ import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page() {
-    let score
-  const [DoneTests , setDoneTests] = useState([] as any)
+  let score;
+  const [DoneTests, setDoneTests] = useState([] as any);
 
   const { user, isLoaded } = useUser();
 
   const {
     data: mcqTestData,
     isLoading,
-      isError
+    isError,
   } = useQuery({
     queryKey: ["McqTests"],
     queryFn: getMcqTests,
@@ -36,21 +36,20 @@ export default function Page() {
     isSuccess: successResults,
   } = useQuery({
     queryKey: ["McqResults", user?.id],
-    queryFn: () => user? getMcqAllResults(user.id) : [],
+    queryFn: () => (user ? getMcqAllResults(user.id) : []),
     enabled: isLoaded,
   });
-    
-    useEffect(() => {
-        if (successResults && mcqResults) {
-          let resultTestIds : any = []
-          mcqResults.map((v, i) => {
-            resultTestIds.push(v.testId)
-          })
-        setDoneTests(resultTestIds)
-      }
-    },[successResults])
-    
-    
+
+  useEffect(() => {
+    if (successResults && mcqResults) {
+      let resultTestIds: any = [];
+      mcqResults.map((v, i) => {
+        resultTestIds.push(v.testId);
+      });
+      setDoneTests(resultTestIds);
+    }
+  }, [successResults]);
+
   if (isLoading || !isLoaded || loadingResults) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
@@ -235,7 +234,7 @@ export default function Page() {
     </div>
   );
 }
-                  /* <div
+/* <div
                     className={
                       "absolute inset-0 flex items-center text-[0.6rem] justify-center font-extrabold"
                     }
