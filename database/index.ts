@@ -6,9 +6,8 @@ import { and, eq } from "drizzle-orm";
 import {
   announcementTable,
   mcqQuestionsTable,
-  mcqTestsTable,
-    mcqResults,
-  mcqCatagories
+  mcqResults,
+  mcqCatagories,
 } from "./db/schema";
 
 // You can specify any property from the libsql connection options
@@ -23,19 +22,6 @@ export const db = drizzle({
 export const getAnnouncements = async () => {
   const announcements = await db.select().from(announcementTable);
   return announcements;
-};
-
-export const getMcqTests = async () => {
-  const McqTests = await db.select().from(mcqTestsTable);
-  return McqTests;
-};
-
-export const getMcqQuestions = async (Testid: number) => {
-  const McqQestions = await db
-    .select()
-    .from(mcqQuestionsTable)
-    .where(eq(mcqQuestionsTable.testId, Testid));
-  return McqQestions;
 };
 
 export const InsertMcqResults = async (
@@ -73,23 +59,23 @@ export const getMcqResults = async (userId: string, testId: number) => {
   return McqResults[0];
 };
 
-export const getMcqAllResults = async (userid: string ) => {
-
-    const McqResults = await db
-      .select()
-      .from(mcqResults)
-      .where(eq(mcqResults.userId, userid));
-    return McqResults;
-  
-};
-
-
-
-export const getMcqCat = async () => {
+export const getMcqAllResults = async (userid: string) => {
   const McqResults = await db
     .select()
-    .from(mcqCatagories)
+    .from(mcqResults)
+    .where(eq(mcqResults.userId, userid));
   return McqResults;
 };
 
+export const getMcqCat = async () => {
+  const McqResults = await db.select().from(mcqCatagories);
+  return McqResults;
+};
 
+export const getMcqQuestionsByCategoryId = async (categoryId:number) => {
+  const questions = await db
+    .select()
+    .from(mcqQuestionsTable)
+    .where(eq(mcqQuestionsTable.catId, categoryId))
+  return questions;
+};

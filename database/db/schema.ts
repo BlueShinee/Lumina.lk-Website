@@ -16,7 +16,7 @@ export const mcqCatagories = sqliteTable("mcq_Cat", {
 
 export const mcqQuestionsTable = sqliteTable("mcq_questions", {
   id: int().primaryKey({ autoIncrement: true }),
-  catId: int().notNull(),
+  catId: int().notNull().references(() => mcqCatagories.id),
   question: text().notNull(),
   Qnumber: int().notNull(),
   option1: text().notNull(),

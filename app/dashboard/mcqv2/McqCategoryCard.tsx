@@ -24,7 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 // Define a type for the category prop
 // Ensure this matches the actual structure of your category data
@@ -42,9 +42,11 @@ interface McqCategoryCardProps {
 function McqCategoryCard({ category }: McqCategoryCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [numQuestions, setNumQuestions] = useState(20); // Default value, min 5, max 100
+  const router = useRouter();
 
   const handleSubmit = () => {
-        redirect("/mcqv2/" + category.id + "/" + numQuestions);
+        router.push("/mcqv2/" + category.id + "-" + numQuestions);
+        setIsOpen(false);
   };
 
   return (
@@ -86,7 +88,7 @@ function McqCategoryCard({ category }: McqCategoryCardProps) {
             <Slider
               id="num-questions"
               min={5}
-              max={100}
+              max={20}
               step={1}
               value={[numQuestions]}
               onValueChange={(value: SetStateAction<number>[]) =>
