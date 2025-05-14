@@ -23,7 +23,7 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 // Define a type for the category prop
@@ -115,18 +115,6 @@ function McqCategoryCard({ category }: McqCategoryCardProps) {
   );
 }
 
+export default McqCategoryCard;
 
-export function McqCatagories() {
-  const { data: catagories } = useQuery({
-    queryKey: ["mcq-catagories"],
-    queryFn: getMcqCat,
-  });
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {catagories?.map((cat, index) => (
-        <McqCategoryCard key={index} category={cat} />
-      ))}
-    </div>
-  );
-};

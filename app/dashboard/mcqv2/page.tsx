@@ -1,5 +1,5 @@
 import { getMcqCat } from "@/database/index";
-import { McqCatagories } from "./McqCategoryCard"; // Added import for the new component
+import McqCategoryCard from "./McqCategoryCard"; // Added import for the new component
 import { tryCatch } from "@/lib/trycatch";
 import {
   Card,
@@ -14,16 +14,12 @@ import {
   usePrefetchQuery,
   HydrationBoundary,
   dehydrate,
+  useSuspenseQuery,
 } from "@tanstack/react-query";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page() {
-  const queryClient = new QueryClient();
-
-  await queryClient.prefetchQuery({
-    queryKey: ["mcq-catagories"],
-    queryFn: getMcqCat,
-  });
-
   return (
     <div className="w-full min-h-screen p-6 space-y-8 bg-zinc-50 flex flex-col">
       <div className="flex flex-col space-y-2">
@@ -35,13 +31,29 @@ export default async function Page() {
           Unit and the number of questions you want.
         </p>
       </div>
-          <div className="w-full ">
-        <Suspense fallback={<div>Loading...</div>}>
-          <HydrationBoundary state={dehydrate(queryClient)}>
-            <McqCatagories />
-          </HydrationBoundary>
+      <div className="w-full ">
+        <Suspense
+          fallback={
+            <div className="w-full flex flex-col min-h-[80vh] justify-center items-center">
+              <span className="loading loading-spinner loading-xl text-orange-600"></span>
+            </div>
+          }
+        >
+          <McqCatagories />
         </Suspense>
       </div>
+    </div>
+  );
+}
+
+async function McqCatagories() {
+  const { data: catagories, error: catErr } = await tryCatch(getMcqCat());
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {catagories?.map((cat, index) => (
+        <McqCategoryCard key={index} category={cat} />
+      ))}
     </div>
   );
 }

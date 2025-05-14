@@ -68,14 +68,15 @@ export const getMcqAllResults = async (userid: string) => {
 };
 
 export const getMcqCat = async () => {
+  await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 second delay for debugging
   const McqResults = await db.select().from(mcqCatagories);
   return McqResults;
 };
 
-export const getMcqQuestionsByCategoryId = async (categoryId:number) => {
+export const getMcqQuestionsByCategoryId = async (categoryId: number) => {
   const questions = await db
     .select()
     .from(mcqQuestionsTable)
-    .where(eq(mcqQuestionsTable.catId, categoryId))
+    .where(eq(mcqQuestionsTable.catId, categoryId));
   return questions;
 };
