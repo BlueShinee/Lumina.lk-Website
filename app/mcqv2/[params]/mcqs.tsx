@@ -12,7 +12,7 @@ export default async function Mcqs({ qCatagory, qAmount }: McqsProps) {
   return (
     <div className="w-full">
       {test.map((v, i) => {
-        return <McqCard question={v} key={i}/>;
+        return <McqCard question={v} Qnum={i} key={i}/>;
       })}
     </div>
   );
