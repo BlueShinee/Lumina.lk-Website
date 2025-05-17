@@ -10,7 +10,9 @@ export default async function page({
   let test = await genarateQuestions(parseInt(qCatagory), parseInt(qAmount));
   return (<div className="w-full min-h-screen flex flex-col">
     <Suspense fallback={<span>loading...</span>}>
-      {test}
-    </Suspense></div>
+      {test.map((q) => (<div key={q.id}>{q.question}</div>))}
+      </Suspense>
+      
+  </div>
   );
 }
