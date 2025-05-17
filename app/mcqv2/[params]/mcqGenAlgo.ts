@@ -27,7 +27,5 @@ export async function genarateQuestions(catagory: number, amount: number) {
     counter++;
   }
   //----------------------------------------------------
-
-  console.log(qSelected);
   return qSelected;
 }
